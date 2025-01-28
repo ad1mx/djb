@@ -3,9 +3,8 @@ import { loadFiles } from "../utils/handler";
 import CliTable3 from "cli-table3";
 import { Command } from "@/src/types/command";
 import { Client } from "../types/client";
-import { getCurrenDir } from "../utils";
 
-const commandsPath = path.join(process.cwd(), "dist", "app", "commands"); // Production path (dist)
+const commandsPath = path.join(process.cwd(), "dist", "app", "commands");
 
 const CommandHandler = async (client: Client) => {
   const commands = await loadFiles<Command>(commandsPath);

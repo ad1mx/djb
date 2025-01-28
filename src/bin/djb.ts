@@ -1,9 +1,8 @@
 #!/usr/bin/env node
-import { exec } from "node:child_process";
-import { version, description } from "../../package.json";
+import { version, description } from "@/package.json";
 import { program } from "commander";
-import { djbStart } from "../cli/djb-start";
-import { djbCreate } from "../cli/djb-create";
+import { djbStart } from "@/src/cli/djb-start";
+import { djbCreate } from "@/src/cli/djb-create";
 
 program.version(version).description(description);
 

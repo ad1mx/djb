@@ -36,7 +36,7 @@ DJB follows a structured approach to organizing commands and events.
 **Example Event File**: `app/events/client-ready.ts`
 
 ```typescript
-import { log } from "../../../lib/logger";
+import { log } from "@/src/lib/logger";
 import { EventConfig, EventExecute } from "@ad1m/djb";
 import { Events } from "discord.js";
 

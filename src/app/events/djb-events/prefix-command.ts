@@ -1,6 +1,6 @@
 import { getClientConfig } from "@/src/utils/handler";
-import { clientConfig } from "../../../constants/config";
-import { log } from "../../../lib/logger";
+import { log } from "@/src/lib/logger";
+
 import { EventConfig, EventExecute } from "@/src/types/event";
 import { Events } from "discord.js";
 
