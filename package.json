@@ -1,0 +1,76 @@
+{
+  "name": "@ad1m/djb",
+  "version": "1.2.1",
+  "description": "A streamlined library for creating Discord bots with Discord.js, featuring a simple command and event handler structure.",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      }
+    }
+  },
+  "files": [
+    "dist",
+    "@types"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "start": "node .",
+    "dev": "nodemon src/index.ts",
+    "lint": "eslint . --ext .ts,.js",
+    "clean": "rimraf dist"
+  },
+  "keywords": [
+    "discord.js",
+    "discord-bot",
+    "djb",
+    "command-handler",
+    "event-handler",
+    "typescript",
+    "discord",
+    "bot-library"
+  ],
+  "author": "Adam <hedrog33n@gmail.com>",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ad1mx/djb.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ad1mx/djb/issues"
+  },
+  "homepage": "https://github.com/ad1mx/djb#readme",
+  "devDependencies": {
+    "@eslint/js": "^9.18.0",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.7",
+    "@typescript-eslint/eslint-plugin": "^8.20.0",
+    "@typescript-eslint/parser": "^8.20.0",
+    "eslint": "^9.18.0",
+    "nodemon": "^3.1.9",
+    "rimraf": "^6.0.1",
+    "ts-node": "^10.9.2",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.20.0"
+  },
+  "dependencies": {
+    "chalk-template": "^1.1.0",
+    "cli-table3": "^0.6.5",
+    "commander": "^13.1.0",
+    "dotenv": "^16.4.7",
+    "ascii-table": "^0.0.9",
+    "discord.js": "^14.17.3",
+    "express": "^4.21.2",
+    "fs-extra": "^11.3.0",
+    "mongoose": "^8.9.5"
+  }
+}
