@@ -92,9 +92,7 @@ const djbClient = new DJBClient(
     intents: [
       GatewayIntentBits.Guilds,
       GatewayIntentBits.GuildMessages,
-      GatewayIntentBits.DirectMessages,
       GatewayIntentBits.MessageContent,
-      GatewayIntentBits.GuildMembers,
     ],
     partials: [Partials.Channel],
   },
