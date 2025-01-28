@@ -66,8 +66,8 @@ export const config: CommandConfig = {
   description: "Pings the bot",
 };
 
-const Ping: CommandExecute = async (c, msg) => {
-  msg.reply("Pong 🏓!");
+const Ping: CommandExecute = (client, message) => {
+  message.reply("Pong 🏓!");
 };
 
 export default Ping;
