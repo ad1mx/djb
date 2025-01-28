@@ -13,9 +13,9 @@ interface DJBClientOptions {
 
 export class DJBClient {
   public client: Client;
-  private app: express.Express;
-  private server: ReturnType<typeof createServer>;
-  private djbOptions?: DJBClientOptions;
+  public app: express.Express;
+  public server: ReturnType<typeof createServer>;
+  public djbOptions?: DJBClientOptions;
 
   constructor(options: ClientOptions, djbOptions?: DJBClientOptions) {
     this.client = new Client(options);

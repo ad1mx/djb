@@ -24,8 +24,8 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 ));
 
 // package.json
-var version = "1.0.0-28";
-var description = "";
+var version = "1.2.3";
+var description = "A streamlined library for creating Discord bots with Discord.js, featuring a simple command and event handler structure.";
 
 // src/bin/djb.ts
 var import_commander = require("commander");

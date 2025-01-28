@@ -1,10 +1,10 @@
 import {
+  log
+} from "../../../chunk-SZ4WLV4Y.mjs";
+import {
   getClientConfig
 } from "../../../chunk-6TLBDZDO.mjs";
 import "../../../chunk-L7GWEIC4.mjs";
-import {
-  log
-} from "../../../chunk-SZ4WLV4Y.mjs";
 
 // src/app/events/djb-events/prefix-command.ts
 import { Events } from "discord.js";

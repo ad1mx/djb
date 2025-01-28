@@ -1,4 +1,6 @@
 import { ClientOptions } from 'discord.js';
+import express from 'express';
+import { createServer } from 'http';
 import { a as Client } from './client-Ci-GbmCp.js';
 
 interface DJBClientOptions {
@@ -6,9 +8,9 @@ interface DJBClientOptions {
 }
 declare class DJBClient {
     client: Client;
-    private app;
-    private server;
-    private djbOptions?;
+    app: express.Express;
+    server: ReturnType<typeof createServer>;
+    djbOptions?: DJBClientOptions;
     constructor(options: ClientOptions, djbOptions?: DJBClientOptions);
     private setupServer;
     private setupClient;
