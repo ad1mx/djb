@@ -5,13 +5,13 @@ import { Event } from "@/src/types/event";
 import { Client } from "../types/client";
 import { getCurrenDir } from "../utils";
 
-const eventsPath = path.join(process.cwd(), "dist", "app", "events");
-const internalEventsPath = path.join(getCurrenDir(), "..", "app", "events");
+const internalEventsPath = path.join(getCurrenDir(), "..", "core", "events");
 
-const EventHandler = async (client: Client) => {
+const EventHandler = async (client: Client, appPath: string) => {
   const table = new CliTable3({
     head: ["Group", "Name", "Event", "Status"],
   });
+  const eventsPath = path.join(appPath, "events");
 
   const internalEvents = await loadFiles<Event>(internalEventsPath);
   const events = await loadFiles<Event>(eventsPath);

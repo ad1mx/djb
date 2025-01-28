@@ -24,7 +24,7 @@
   "scripts": {
     "build": "tsup",
     "start": "node .",
-    "dev": "nodemon src/index.ts",
+    "dev": "tsnd src",
     "lint": "eslint . --ext .ts,.js",
     "clean": "rimraf dist"
   },
@@ -58,17 +58,18 @@
     "nodemon": "^3.1.9",
     "rimraf": "^6.0.1",
     "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
     "tsup": "^8.3.5",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.20.0"
   },
   "dependencies": {
+    "ascii-table": "^0.0.9",
     "chalk-template": "^1.1.0",
     "cli-table3": "^0.6.5",
     "commander": "^13.1.0",
-    "dotenv": "^16.4.7",
-    "ascii-table": "^0.0.9",
     "discord.js": "^14.17.3",
+    "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "fs-extra": "^11.3.0",
     "mongoose": "^8.9.5"

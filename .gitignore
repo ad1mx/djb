@@ -2,4 +2,4 @@
 /dist
 
 .env
-pnpm-lock.yaml
+yarn-lock.yaml

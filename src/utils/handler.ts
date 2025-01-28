@@ -12,6 +12,8 @@ export type HandlerFile<T> = {
 export const getClientConfig = async (): Promise<ClientConfig | undefined> => {
   const configPath = path.join(process.cwd(), "dist", "config.js");
 
+  console.log(path.extname("config.js"));
+
   if (!fs.existsSync(configPath)) return;
 
   const config = await import(configPath);
@@ -25,9 +27,7 @@ export const loadFiles = async <T>(dirPath: string) => {
     return [];
   }
 
-  const entries = fs
-    .readdirSync(dirPath, { withFileTypes: true })
-    .filter((v) => v.isDirectory() || /\.(js)$/.test(v.name));
+  const entries = fs.readdirSync(dirPath, { withFileTypes: true });
 
   const filesArr: HandlerFile<T>[] = [];
 
@@ -47,7 +47,7 @@ export const loadFiles = async <T>(dirPath: string) => {
 
       filesArr.push({
         parent: path.basename(dirPath),
-        name: entry.name.replace(/\.(js|mjs)$/, ""),
+        name: entry.name.replace(/\.(js|mjs|ts|mts)$/, ""),
         data: {
           config: resolvedFileData.config,
           execute: resolvedFileData.default,

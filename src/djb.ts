@@ -4,7 +4,7 @@ import express from "express";
 import { createServer } from "http";
 import { connectToDb } from "./lib/mongo";
 import { log } from "./lib/logger";
-import { initHandlers } from "./utils/handler";
+import { getClientConfig, initHandlers } from "./utils/handler";
 import { Client } from "./types/client";
 
 interface DJBClientOptions {
@@ -37,6 +37,13 @@ export class DJBClient {
 
   private setupClient() {
     this.client.commands = new Collection();
+
+    const config = getClientConfig();
+    if (!config)
+      throw new Error(
+        "No config file found, please mrovide a valid config.js file."
+      );
+
     initHandlers(this.client);
   }
 

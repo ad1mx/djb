@@ -4,7 +4,7 @@ import CliTable3 from "cli-table3";
 import { Command } from "@/src/types/command";
 import { Client } from "../types/client";
 
-const commandsPath = path.join(process.cwd(), "dist", "app", "commands");
+const commandsPath = path.join(process.cwd(), "dist", "core", "commands");
 
 const CommandHandler = async (client: Client) => {
   const commands = await loadFiles<Command>(commandsPath);
