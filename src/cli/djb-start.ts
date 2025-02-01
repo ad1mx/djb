@@ -1,5 +1,5 @@
 import { DJBClient } from "../djb";
-import { log } from "../lib/logger";
+import { log } from "@ad1m/logger";
 
 export const djbStart = () => {
   log.info("djb", "Starting bot...");

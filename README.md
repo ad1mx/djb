@@ -30,13 +30,13 @@ DJB follows a structured approach to organizing commands and events.
 
 ### Events
 
-- Events are located in the `core/events` directory.
+- Events are located in the `app/events` directory.
 - Each event file exports a `config` object and an `execute` function.
 
-**Example Event File**: `core/events/client-ready.ts`
+**Example Event File**: `app/events/client-ready.ts`
 
 ```typescript
-import { log } from "@/src/lib/logger";
+import { log } from "@ad1m/logger";
 import { EventConfig, EventExecute } from "@ad1m/djb";
 import { Events } from "discord.js";
 
@@ -54,10 +54,10 @@ export default ClientReady;
 
 ### Commands
 
-- Commands are located in the `core/commands` directory.
+- Commands are located in the `app/commands` directory.
 - Each command file exports a `config` object and a default `execute` function.
-
-**Example Command File**: `core/commands/ping.ts`
+  c
+  **Example Command File**: `app/commands/ping.ts`
 
 ```typescript
 import { CommandConfig, CommandExecute } from "@ad1m/djb";

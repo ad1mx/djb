@@ -3,18 +3,16 @@ import { loadFiles } from "../utils/handler";
 import CliTable3 from "cli-table3";
 import { Event } from "@/src/types/event";
 import { Client } from "../types/client";
-import { getCurrenDir } from "../utils";
-
-const internalEventsPath = path.join(getCurrenDir(), "..", "core", "events");
+import { getCurrenDir } from "../utils/url.js";
 
 const EventHandler = async (client: Client, appPath: string) => {
+  const internalEventsPath = path.join(getCurrenDir(), "..", "core-events");
+  const eventsPath = path.join(appPath, "events");
+  const internalEvents = await loadFiles<Event>(internalEventsPath);
+  const events = await loadFiles<Event>(eventsPath);
   const table = new CliTable3({
     head: ["Group", "Name", "Event", "Status"],
   });
-  const eventsPath = path.join(appPath, "events");
-
-  const internalEvents = await loadFiles<Event>(internalEventsPath);
-  const events = await loadFiles<Event>(eventsPath);
 
   for (const event of [...internalEvents, ...events]) {
     const { data, name, parent } = event;

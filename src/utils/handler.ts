@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { Client, ClientConfig } from "../types/client";
-import { getCurrenDir } from ".";
+import { getAppPath, getCurrenDir } from "./url";
 
 export type HandlerFile<T> = {
   parent: string;
@@ -9,58 +9,85 @@ export type HandlerFile<T> = {
   data: T;
 };
 
+const EXT_PRIORITY = ["js", "mjs", "cjs"];
+
 export const getClientConfig = async (): Promise<ClientConfig | undefined> => {
-  const configPath = path.join(process.cwd(), "dist", "config.js");
+  const dirPath = path.join(getAppPath(), "..");
 
-  console.log(path.extname("config.js"));
+  if (!fs.existsSync(dirPath)) return;
 
-  if (!fs.existsSync(configPath)) return;
+  // Select the best matching config file based on EXT_PRIORITY
+  const configFile = fs
+    .readdirSync(dirPath, { withFileTypes: true })
+    .filter((entry) => entry.isFile())
+    .find((entry) => {
+      return EXT_PRIORITY.some((ext) => entry.name.endsWith(`.${ext}`));
+    });
+
+  if (!configFile)
+    throw new Error(
+      `No config file found, please mrovide a valid config.js file.` +
+        `\nValid extentions: ${EXT_PRIORITY.join(",")}`
+    );
+
+  const configPath = path.join(dirPath, configFile.name);
 
   const config = await import(configPath);
-  const resolvedConfig = config.default.config ?? config.config;
+  const resolvedConfig = config.default?.config ?? config.config;
 
   return resolvedConfig;
 };
 
 export const loadFiles = async <T>(dirPath: string) => {
-  if (!fs.existsSync(dirPath)) {
-    return [];
-  }
+  if (!fs.existsSync(dirPath)) return [];
 
-  const entries = fs.readdirSync(dirPath, { withFileTypes: true });
-
-  const filesArr: HandlerFile<T>[] = [];
+  const entries = fs.readdirSync(dirPath, {
+    withFileTypes: true,
+    recursive: true,
+  });
+  const fileMap = new Map<string, HandlerFile<T>>();
 
   for (const entry of entries) {
-    const entryPath = path.join(dirPath, entry.name);
+    if (entry.isDirectory()) continue;
 
-    if (entry.isDirectory()) {
-      const nestedFiles = await loadFiles<T>(entryPath);
+    const match = entry.name.match(/^(.+)\.([^.]+)$/);
+    if (!match) continue;
 
-      filesArr.push(...nestedFiles);
-    } else {
-      const fileData = await import(entryPath);
+    const [, baseName, ext] = match;
+    if (!EXT_PRIORITY.includes(ext)) continue; // Ignore non-priority extensions
 
-      const resolvedFileData = fileData.default.default
-        ? fileData.default
-        : fileData;
+    const existingEntry = fileMap.get(baseName);
+    if (
+      !existingEntry ||
+      EXT_PRIORITY.indexOf(ext) <
+        EXT_PRIORITY.indexOf(existingEntry.name.split(".").pop()!)
+    ) {
+      const entryPath = path.join(entry.parentPath, entry.name);
+      const { default: fileData } = await import(entryPath);
 
-      filesArr.push({
+      const file: HandlerFile<T> = {
         parent: path.basename(dirPath),
-        name: entry.name.replace(/\.(js|mjs|ts|mts)$/, ""),
+        name: entry.name.replace(
+          new RegExp(`\\.(${EXT_PRIORITY.join("|")})$`),
+          ""
+        ),
         data: {
-          config: resolvedFileData.config,
-          execute: resolvedFileData.default,
+          config: fileData.config,
+          execute: fileData.default,
         } as T,
-      });
+      };
+
+      fileMap.set(baseName, file); // Store only the highest-priority extension
     }
   }
 
-  return filesArr;
+  return fileMap.values();
 };
 
 export const initHandlers = async (client: Client) => {
   const handlersPath = path.join(getCurrenDir(), "handlers");
+
+  console.log(handlersPath);
 
   if (!fs.existsSync(handlersPath)) {
     return [];
@@ -72,10 +99,10 @@ export const initHandlers = async (client: Client) => {
 
   for (const handlerFile of handlerFiles) {
     const filePath = path.join(handlersPath, handlerFile);
-    const {
-      default: { default: handler },
-    } = await import(filePath);
+    const handlerFileData = await import(filePath);
 
-    await handler(client);
+    const handler = handlerFileData.default?.default ?? handlerFileData.default;
+
+    await handler(client, getAppPath());
   }
 };

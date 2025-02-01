@@ -1,4 +1,4 @@
-import { log } from "@/src/lib/logger";
+import { log } from "@ad1m/logger";
 import { EventConfig, EventExecute } from "@/src/types/event";
 import { Events } from "discord.js";
 

@@ -2,4 +2,4 @@
 /dist
 
 .env
-yarn-lock.yaml
+yarn.lock

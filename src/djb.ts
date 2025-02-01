@@ -3,9 +3,9 @@ import { ClientOptions, Collection } from "discord.js";
 import express from "express";
 import { createServer } from "http";
 import { connectToDb } from "./lib/mongo";
-import { log } from "./lib/logger";
 import { getClientConfig, initHandlers } from "./utils/handler";
 import { Client } from "./types/client";
+import { log } from "@ad1m/logger";
 
 interface DJBClientOptions {
   mongoDb?: boolean;
@@ -35,15 +35,9 @@ export class DJBClient {
     });
   }
 
-  private setupClient() {
+  private async setupClient() {
     this.client.commands = new Collection();
-
-    const config = getClientConfig();
-    if (!config)
-      throw new Error(
-        "No config file found, please mrovide a valid config.js file."
-      );
-
+    this.client.config = await getClientConfig();
     initHandlers(this.client);
   }
 

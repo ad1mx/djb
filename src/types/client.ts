@@ -6,9 +6,11 @@ export interface CommandCollection<commandName = string, data = Command>
 
 export class Client extends BaseClient {
   commands?: CommandCollection;
+  config?: ClientConfig;
 }
 
 export type ClientConfig = {
   prefix: string;
+  description?: string;
   developerIDs?: string[];
 };
