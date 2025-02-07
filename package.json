@@ -1,6 +1,6 @@
 {
   "name": "@ad1m/djb",
-  "version": "1.2.4-1",
+  "version": "1.2.6",
   "description": "A streamlined library for creating Discord bots with Discord.js, featuring a simple command and event handler structure.",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -51,6 +51,7 @@
   "devDependencies": {
     "@eslint/js": "^9.18.0",
     "@types/express": "^5.0.0",
+    "@types/ms": "^2.1.0",
     "@types/node": "^22.10.7",
     "@typescript-eslint/eslint-plugin": "^8.20.0",
     "@typescript-eslint/parser": "^8.20.0",
@@ -72,6 +73,7 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "fs-extra": "^11.3.0",
-    "mongoose": "^8.9.5"
+    "mongoose": "^8.9.5",
+    "ms": "^2.1.3"
   }
 }
