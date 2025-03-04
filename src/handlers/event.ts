@@ -2,10 +2,10 @@ import path from "node:path";
 import { loadFiles } from "../utils/handler";
 import CliTable3 from "cli-table3";
 import { Event } from "@/src/types/event";
-import { Client } from "../types/client";
 import { getCurrenDir } from "../utils/url.js";
+import { DJBClient } from "../djb";
 
-const EventHandler = async (client: Client, appPath: string) => {
+const EventHandler = async (client: DJBClient, appPath: string) => {
   const internalEventsPath = path.join(getCurrenDir(), "..", "core-events");
   const eventsPath = path.join(appPath, "events");
   const internalEvents = await loadFiles<Event>(internalEventsPath);

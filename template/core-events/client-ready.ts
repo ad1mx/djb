@@ -8,7 +8,7 @@ export const config: EventConfig = {
 };
 
 const ClientReady: EventExecute<Events.ClientReady> = async (client) => {
-  log.success("client", `Client is ready at '${client.user?.tag}'`);
+  log.success("client", `Client is ready @${client.user?.tag}`);
 };
 
 export default ClientReady;

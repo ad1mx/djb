@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { Client, ClientConfig } from "../types/client";
+import { DJBClient, ClientConfig } from "../djb";
 import { getAppPath, getCurrenDir } from "./url";
 
 export type HandlerFile<T> = {
@@ -32,10 +32,9 @@ export const getClientConfig = async (): Promise<ClientConfig | undefined> => {
 
   const configPath = path.join(dirPath, configFile.name);
 
-  const config = await import(configPath);
-  const resolvedConfig = config.default?.config ?? config.config;
+  const configFiledata = await import(configPath);
 
-  return resolvedConfig;
+  return configFiledata?.config;
 };
 
 export const loadFiles = async <T>(dirPath: string) => {
@@ -63,7 +62,11 @@ export const loadFiles = async <T>(dirPath: string) => {
         EXT_PRIORITY.indexOf(existingEntry.name.split(".").pop()!)
     ) {
       const entryPath = path.join(entry.parentPath, entry.name);
-      const { default: fileData } = await import(entryPath);
+      const fileData = await import(entryPath);
+
+      const resolvedFiledata = fileData.default?.default
+        ? fileData.default
+        : fileData;
 
       const file: HandlerFile<T> = {
         parent: path.basename(dirPath),
@@ -72,8 +75,12 @@ export const loadFiles = async <T>(dirPath: string) => {
           ""
         ),
         data: {
-          config: fileData.config,
-          execute: fileData.default,
+          config: resolvedFiledata?.config,
+          execute:
+            resolvedFiledata?.default &&
+            typeof resolvedFiledata.default === "function"
+              ? resolvedFiledata.default
+              : undefined,
         } as T,
       };
 
@@ -84,10 +91,8 @@ export const loadFiles = async <T>(dirPath: string) => {
   return fileMap.values();
 };
 
-export const initHandlers = async (client: Client) => {
+export const initHandlers = async (client: DJBClient) => {
   const handlersPath = path.join(getCurrenDir(), "handlers");
-
-  console.log(handlersPath);
 
   if (!fs.existsSync(handlersPath)) {
     return [];
@@ -101,8 +106,14 @@ export const initHandlers = async (client: Client) => {
     const filePath = path.join(handlersPath, handlerFile);
     const handlerFileData = await import(filePath);
 
-    const handler = handlerFileData.default?.default ?? handlerFileData.default;
+    const handlerFunction =
+      handlerFileData.default?.default ?? handlerFileData.default;
 
-    await handler(client, getAppPath());
+    if (!handlerFunction || typeof handlerFunction !== "function")
+      throw new Error(
+        `${handlerFile} missing required default execute function.`
+      );
+
+    await handlerFunction(client, getAppPath());
   }
 };

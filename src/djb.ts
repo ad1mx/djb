@@ -1,59 +1,56 @@
+import { Client as BaseClient, ClientOptions, Collection } from "discord.js";
 import "dotenv/config";
-import { ClientOptions, Collection } from "discord.js";
-import express from "express";
-import { createServer } from "http";
 import { connectToDb } from "./lib/mongo";
 import { getClientConfig, initHandlers } from "./utils/handler";
-import { Client } from "./types/client";
-import { log } from "@ad1m/logger";
+import { Command } from "./types/command";
+import { SelectMenu } from "./types/select-menu";
+import { Modal } from "./types/modal";
+import { Button } from "./types/button";
+
+export type ClientConfig = {
+  prefix: string;
+  description?: string;
+  ownerIds?: string[];
+};
 
 interface DJBClientOptions {
   mongoDb?: boolean;
 }
 
-export class DJBClient {
-  public client: Client;
-  public app: express.Express;
-  public server: ReturnType<typeof createServer>;
+export class DJBClient extends BaseClient {
+  public config?: ClientConfig;
+  public cache = new Collection<string, any>();
+  public commands = new Collection<string, Command>();
+  public selectMenus = new Collection<string, SelectMenu>();
+  public modals = new Collection<string, Modal>();
+  public buttons = new Collection<string, Button>();
   public djbOptions?: DJBClientOptions;
 
   constructor(options: ClientOptions, djbOptions?: DJBClientOptions) {
-    this.client = new Client(options);
+    super(options);
     this.djbOptions = djbOptions;
-    this.app = express();
-    this.server = createServer(this.app);
-  }
-
-  private setupServer() {
-    this.app.get("/", (req, res) => {
-      res.send("Hello world!");
-    });
-
-    const port = process.env.DJB_PORT || 3000;
-    this.server.listen(port, () => {
-      log.success("server", `App is running on port '${port}'`);
-    });
   }
 
   private async setupClient() {
-    this.client.commands = new Collection();
-    this.client.config = await getClientConfig();
-    initHandlers(this.client);
+    this.config = await getClientConfig();
+    initHandlers(this);
   }
 
   private setupDatabase() {
-    if (!process.env.DJB_MONGODB_URI)
+    if (!process.env.DJB_MONGODB_URI) {
       throw new Error("MONGODB_URI env must be provided when mongoDb is true");
+    }
     connectToDb(process.env.DJB_MONGODB_URI ?? "");
   }
 
   public start() {
-    this.setupServer();
     if (this.djbOptions?.mongoDb) this.setupDatabase();
     this.setupClient();
 
-    if (!process.env.DJB_TOKEN)
+    if (!process.env.DJB_TOKEN) {
       throw new Error("DJB_TOKEN env must be provided");
-    this.client.login(process.env.DJB_TOKEN);
+    }
+
+    this.login(process.env.DJB_TOKEN);
   }
 }

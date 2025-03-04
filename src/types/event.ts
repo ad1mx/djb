@@ -1,5 +1,5 @@
 import { ClientEvents } from "discord.js";
-import { Client } from "./client";
+import { DJBClient } from "../djb";
 
 export type EventConfig = {
   name: keyof ClientEvents;
@@ -10,7 +10,7 @@ export type EventConfig = {
  * Event execute function
  */
 export type EventExecute<Event extends keyof ClientEvents> = (
-  client: Client,
+  client: DJBClient,
   ...args: ClientEvents[Event]
 ) => void;
 

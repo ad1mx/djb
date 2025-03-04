@@ -3,6 +3,7 @@
     "target": "ES2020",
     "module": "ESNext",
     "moduleResolution": "node",
+
     "outDir": "dist",
     "rootDir": "src",
     "strict": true,
@@ -12,6 +13,7 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
+
     "baseUrl": "./",
     "paths": {
       "@/*": ["./*"],
@@ -19,13 +21,7 @@
     }
   },
   "include": ["src"],
-  "exclude": [
-    "dist",
-    "@types",
-    "node_modules",
-    "eslint.config.mjs",
-    "src/**/*.test.ts"
-  ],
+  "exclude": ["dist", "template"],
   "ts-node": {
     "files": true
   }

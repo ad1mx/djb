@@ -1,8 +1,14 @@
-import { inlineCode, Message, OmitPartialGroupDMChannel } from "discord.js";
-import { CommandArg, CommandArgType, CommandConfig } from "../types/command";
-import { Client, ClientConfig } from "../types/client";
+import {
+  Collection,
+  inlineCode,
+  Message,
+  OmitPartialGroupDMChannel,
+} from "discord.js";
+import { CommandArg, CommandArgType, CommandConfig } from "@/types/command";
+import ms from "ms";
+import { ClientConfig, DJBClient } from "@/src/djb";
 
-export const getCommandSyntax = (
+const getCommandSyntax = (
   prefix: string,
   commandName: string,
   commandConfig: CommandConfig,
@@ -22,21 +28,21 @@ export const getCommandSyntax = (
 type ValidateCommandResponse =
   | { valid: false; message: string }
   | { valid: false; message?: undefined }
-  | { valid: true; parsedArgs: Map<string, any> };
+  | { valid: true; parsedArgs: Collection<string, any> };
 
 export const validateCommand = async (
   clientConfig: ClientConfig,
   commandConfig: CommandConfig,
   commandName: string,
   message: OmitPartialGroupDMChannel<Message>,
-  args: Map<string, any>,
-  client: Client
+  args: Collection<string, any>,
+  client: DJBClient
 ): Promise<ValidateCommandResponse> => {
   // Dev command
   if (
-    commandConfig.dev &&
-    clientConfig.developerIDs &&
-    !clientConfig.developerIDs.includes(message.author.id)
+    commandConfig.ownersOnly &&
+    clientConfig.ownerIds &&
+    !clientConfig.ownerIds.includes(message.author.id)
   )
     return { valid: false };
 
@@ -80,56 +86,71 @@ export const validateCommand = async (
             args.set(arg.name, value.toLowerCase() === "true");
             break;
 
+          case CommandArgType.TIME:
+            const time = ms(`${value}`);
+            const date = new Date(time);
+            if (!time || !date)
+              return {
+                valid: false,
+                message: `❌  **Invalid argument:** \`${arg.name}\` must be a valid time, e.g., 30d, 12h, 30m.`,
+              };
+
+            args.set(arg.name, time);
+            break;
+
           case CommandArgType.USER:
-            if (!/^<@!?(\d+)>$/.test(value)) {
+            const userPattern = /^<@!?(\d+)>$/;
+            const userId = value.match(userPattern)?.[1];
+            const user = await client.users.fetch(userId);
+
+            if (!userPattern.test(value) || !user)
               return {
                 valid: false,
                 message: `❌  **Invalid argument:** \`${arg.name}\` must be a valid user mention.`,
               };
-            }
-            const userId = value.match(/^<@!?(\d+)>$/)?.[1];
-            const user = await client.users.fetch(userId);
 
             args.set(arg.name, user);
             break;
 
           case CommandArgType.MEMBER:
-            if (!/^<@!?(\d+)>$/.test(value)) {
+            const memberPattern = /^<@!?(\d+)>$/;
+            const memberId = value.match(memberPattern)?.[1];
+            const member = message.guild?.members.cache.get(memberId);
+
+            if (!memberPattern.test(value) || !member)
               return {
                 valid: false,
                 message: `❌  **Invalid argument:** \`${arg.name}\` must be a valid member mention.`,
               };
-            }
-            const memberId = value.match(/^<@!?(\d+)>$/)?.[1];
-            const member = message.guild?.members.cache.get(memberId);
 
             args.set(arg.name, member);
             break;
 
           case CommandArgType.ROLE:
-            if (!/^<@&(\d+)>$/.test(value)) {
+            const rolePattern = /^<@&(\d+)>$/;
+            const roleId = value.match(rolePattern)?.[1];
+            const role = message.guild?.roles.cache.get(roleId);
+
+            if (!rolePattern.test(value) || !role)
               return {
                 valid: false,
                 message: `❌  **Invalid argument:** \`${arg.name}\` must be a valid role mention.`,
               };
-            }
-
-            const roleId = value.match(/^<@&(\d+)>$/)?.[1];
-            const role = message.guild?.roles.cache.get(roleId);
 
             args.set(arg.name, role);
             break;
 
           case CommandArgType.CHANNEL:
-            if (!/^<#(\d+)>$/.test(value)) {
+            const channelPattern = /^<#(\d+)>$/;
+            const channelId = value.match(channelPattern)?.[1];
+            const channel = message.guild?.channels.cache.get(channelId);
+
+            if (!channelPattern.test(value) || !channel) {
               return {
                 valid: false,
                 message: `❌  **Invalid argument:** \`${arg.name}\` must be a valid channel mention.`,
               };
             }
-
-            const channelId = value.match(/^<#(\d+)>$/)?.[1];
-            const channel = message.guild?.channels.cache.get(channelId);
 
             args.set(arg.name, channel);
             break;

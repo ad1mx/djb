@@ -2,9 +2,9 @@ import path from "node:path";
 import { loadFiles } from "../utils/handler";
 import CliTable3 from "cli-table3";
 import { Command } from "@/src/types/command";
-import { Client } from "../types/client";
+import { DJBClient } from "../djb";
 
-const CommandHandler = async (client: Client, appPath: string) => {
+const CommandHandler = async (client: DJBClient, appPath: string) => {
   const commandsPath = path.join(appPath, "commands");
   const commands = await loadFiles<Command>(commandsPath);
   const table = new CliTable3({ head: ["Group", "Name", "Status"] });
