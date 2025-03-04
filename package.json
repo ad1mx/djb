@@ -1,6 +1,6 @@
 {
   "name": "@ad1m/djb",
-  "version": "1.2.7",
+  "version": "1.2.8",
   "description": "A streamlined library for creating Discord bots with Discord.js, featuring a simple command and event handler structure.",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
